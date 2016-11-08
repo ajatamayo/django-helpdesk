@@ -15,7 +15,7 @@ Try using ``pip install django-helpdesk``. Go and have a beer to celebrate Pytho
 GIT Checkout (Cutting Edge)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you're planning on editing the code or just want to get whatever is the latest and greatest, you can clone the official Git repository with ``git clone git://github.com/rossp/django-helpdesk.git``
+If you're planning on editing the code or just want to get whatever is the latest and greatest, you can clone the official Git repository with ``git clone git://github.com/django-helpdesk/django-helpdesk.git``
 
 Copy the ``helpdesk`` folder into your ``PYTHONPATH``.
 
@@ -35,10 +35,9 @@ Adding To Your Django Project
         'django.contrib.auth',
         'django.contrib.contenttypes',
         'django.contrib.sessions',
-        'django.contrib.sites',
+        'django.contrib.sites',  # Required for determing domain url for use in emails
         'django.contrib.admin',  # Required for helpdesk admin/maintenance
         'django.contrib.humanize',  # Required for elapsed time formatting
-        'south',  # Highly recommended to make database migrations simpler in Django < 1.7
         'markdown_deux',  # Required for Knowledgebase item formatting
         'bootstrapform', # Required for nicer formatting of forms with the default templates
         'helpdesk',  # This is us!
@@ -50,15 +49,16 @@ Adding To Your Django Project
 
    Note that you can change 'helpdesk/' to anything you like, such as 'support/' or 'help/'. If you want django-helpdesk to be available at the root of your site (for example at http://support.mysite.tld/) then the line will be as follows::
 
-     url(r'', include('helpdesk.urls')),
+     url(r'', include('helpdesk.urls', namespace='helpdesk')),
 
    This line will have to come *after* any other lines in your urls.py such as those used by the Django admin.
 
-3. Create the required database tables. I'd suggest using *South*, however the following will work::
+   Note that the `helpdesk` namespace is no longer required for Django 1.9 and you can use a different namespace.
+   However, it is recommended to use the default namespace name for clarity.
 
-     ./manage.py syncdb
+3. Create the required database tables.
 
-   Then migrate using South / Django 1.7+ migrations::
+   Migrate using Django migrations::
 
      ./manage.py migrate helpdesk
 
@@ -99,6 +99,6 @@ Adding To Your Django Project
 
    Alter the URL to suit your installation path.
 
-9. Load initial e-mail templates, otherwise you will not be able to setnd e-mail::
+9. Load initial e-mail templates, otherwise you will not be able to send e-mail::
 
    python manage.py loaddata emailtemplate.json

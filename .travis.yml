@@ -1,12 +1,28 @@
 language: python
+
 python:
     - "2.7"
+    - 3.4.4
+    - "3.5"
+
 env:
-    - DJANGO=1.5.10
-    - DJANGO=1.6.7
-    - DJANGO=1.7
+    - DJANGO=1.8.15
+    - DJANGO=1.9.10
+    - DJANGO=1.10.2
+
 install:
     - pip install argparse
+    - pip install coverage
+    - pip install codecov
+    - pip install pep8
     - pip install -q Django==$DJANGO
     - pip install -q -r requirements.txt
-script: python quicktest.py helpdesk
+
+before_script:
+    - "pep8 --exclude=migrations --ignore=E501 helpdesk"
+
+script: 
+    - coverage run --source='.' quicktest.py helpdesk
+
+after_success:
+    - codecov

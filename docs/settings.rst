@@ -1,13 +1,32 @@
 Settings
 ========
 
-First, django-helpdesk needs  ``django.core.context_processors.request`` activated, so in your ``settings.py`` add::
+First, django-helpdesk needs  ``django.core.context_processors.request`` activated, so you must add it to the ``settings.py``. For Django 1.7, add::
 
     from django.conf import global_settings
     TEMPLATE_CONTEXT_PROCESSORS = (
                 global_settings.TEMPLATE_CONTEXT_PROCESSORS +
                 ('django.core.context_processors.request',)
          )
+
+For Django 1.8 and onwards, the settings are located in the ``TEMPLATES``, and the ``request`` module has moved. Add the following instead::
+
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            ...
+            'OPTIONS': {
+                ...
+                'context_processors': (
+                    # Default ones first
+                    ...
+                    # The one django-helpdesk requires:
+                    "django.template.context_processors.request",
+                ),
+            },
+        },
+    ]
+
 
 The following settings can be changed in your ``settings.py`` file to help change the way django-helpdesk operates. There are quite a few settings available to toggle functionality within django-helpdesk.
 
@@ -23,7 +42,6 @@ If you want to override the default settings for your users, create ``HELPDESK_D
             'email_on_ticket_assign': True,
             'email_on_ticket_change': True,
             'login_view_ticketlist': True,
-            'email_on_ticket_apichange': True,
             'tickets_per_page': 25
             }
 
@@ -67,6 +85,10 @@ These changes are visible throughout django-helpdesk
 - **HELPDESK_EMAIL_SUBJECT_TEMPLATE** Subject template for templated emails. ``%(subject)s`` represents the subject wording from the email template (e.g. "(Closed)").
 
   **Default:** ``HELPDESK_EMAIL_SUBJECT_TEMPLATE = "{{ ticket.ticket }} {{ ticket.title|safe }} %(subject)s"``
+
+- **HELPDESK_EMAIL_FALLBACK_LOCALE** Fallback locale for templated emails when queue locale not found
+
+  **Default:** ``HELPDESK_EMAIL_FALLBACK_LOCALE= "en"``
 
 
 Options shown on public pages
@@ -120,6 +142,14 @@ Staff Ticket Creation Settings
   **Default:** ``HELPDESK_CREATE_TICKET_HIDE_ASSIGNED_TO = False``
 
 
+Staff Ticket View Settings
+------------------------------
+
+- **HELPDESK_ENABLE_PER_QUEUE_PERMISSION** If ``True``, logged in staff users only see queues and tickets to which they have specifically been granted access -  this holds for the dashboard, ticket query, and ticket report views. User assignment is done through the standard ``django.admin.admin`` permissions. *Note*: Staff with access to admin interface will be able to see the full list of tickets, but won't have access to details and could not modify them. This setting does not prevent staff users from creating tickets for all queues. Also, superuser accounts have full access to all queues, regardless of whatever queue memberships they have been granted.
+
+  **Default:** ``HELPDESK_ENABLE_PER_QUEUE_PERMISSION = False``
+
+
 
 Default E-Mail Settings
 -----------------------
@@ -165,3 +195,4 @@ The following settings were defined in previous versions and are no longer suppo
 
 - **HELPDESK_FOOTER_SHOW_CHANGE_LANGUAGE_LINK** Is never shown. Use your own template if required.
 
+- **HELPDESK_ENABLE_PER_QUEUE_MEMBERSHIP** Discontinued in favor of HELPDESK_ENABLE_PER_QUEUE_PERMISSION.

@@ -32,7 +32,7 @@ Wherever possible please break git commits up into small chunks that are specifi
 
 Commit messages should also explain *what*, precisely, has been changed.
 
-If you have any questions, please contact the project co-ordinator, Ross Poulton, at ross@rossp.org.
+If you have any questions, please start a discussion on the GitHub issue tracker at https://github.com/django-helpdesk/django-helpdesk/issues
 
 Tests
 -----
@@ -46,7 +46,7 @@ Please include tests in the ``tests/`` folder when committing code changes.
 Database schema changes
 -----------------------
 
-As well as making your normal code changes to ``models.py``, please generate a South migration file and commit it with your code. You will want to use a command similar to the following::
+As well as making your normal code changes to ``models.py``, please generate a Django migration file and commit it with your code. You will want to use a command similar to the following::
 
     ./manage.py migrate helpdesk --auto [migration_name]
 
